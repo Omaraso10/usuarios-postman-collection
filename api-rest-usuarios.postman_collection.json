@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "188a7362-39c6-4e8d-9478-e0f7253bdb40",
+		"name": "api-rest-usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19631441"
+	},
+	"item": [
+		{
+			"name": "JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"access_token\", jsonData.access_token);",
+							"pm.environment.set(\"access_token\", jsonData.access_token);",
+							"",
+							"var status = 200;",
+							"codigoestado = pm.response.code",
+							"pm.test(\"[001]- Valido que los nombres de las propiedades del objeto 'access_token' esten definidas correctamete\", function() {",
+							"var mensajeOk = \"[001]-[OK] - Los nombres de las propiedades del objeto 'access_toke' nestan definidadas correctamente\";",
+							"var mensajeNOk = \"[001]-[NOK] - Los nombres de las propiedades del objeto 'access_token' se encuentran incorrectas\"",
+							"PropiedadesSchema= [\"access_token\"]",
+							"    if(status == codigoestado){",
+							"    obj=Object.keys(jsonData)",
+							"        if (JSON.stringify(PropiedadesSchema) == JSON.stringify(obj)){",
+							"            pm.expect(mensajeOk).to.eql(mensajeOk)",
+							"        }else{",
+							"            console.error(mensajeNOk+' --> '+obj)",
+							"            pm.expect(mensajeNOk).to.eql(false)",
+							"        }",
+							"    }else{",
+							"        console.error(\"[001]-[NOK] - Servicio no responde:\", codigoestado)",
+							"        pm.expect(codigoestado).to.eql(status)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "clienteapp",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "omar.alvarez@correo.cl",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Miclave2024",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/oauth/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "usuarios all",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "usuario x uuid",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "crea usuario",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Miguel Gonzalez\",\n    \"email\": \"miguel.gonzalez3@correo.cl\",\n    \"password\": \"Miclave2024\",\n    \"phones\": [\n        {\n            \"number\": \"1234567\",\n            \"citycode\": \"1\",\n            \"countrycode\": \"57\"\n        },\n        {\n            \"number\": \"4534534\",\n            \"citycode\": \"2\",\n            \"countrycode\": \"56\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update usuario x uuid",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Jorge Gonzalez\",\n    \"email\": \"jorge.gonzalez@correo.cl\",\n    \"password\": \"Miclave2000\",\n    \"isactive\": \"false\",\n    \"phones\": [\n        {\n            \"number\": \"6666666\",\n            \"citycode\": \"2\",\n            \"countrycode\": \"56\"\n        },\n        {\n            \"number\": \"4534534\",\n            \"citycode\": \"4\",\n            \"countrycode\": \"56\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/862ef3b3-d40f-4bb5-92e1-a54298da8776",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"862ef3b3-d40f-4bb5-92e1-a54298da8776"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "password",
+			"value": "8976458",
+			"type": "string"
+		}
+	]
+}
